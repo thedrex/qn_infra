@@ -1,0 +1,21 @@
+hey, quicknode! my solution is up at http://192.241.213.87.
+
+we've got three parts:
+webserver/
+  eight lines of python that use flask to serve up the /test endpoint with our result
+  
+ansible/
+  a tidy playbook that automates deployment to new servers - anything ubuntu you have ssh root access to
+  
+systemd/
+  a small service definition we install so systemd will watchdog for us after crashes and restarts
+
+the playbook verifies packages, checks out code, installs our service, and kicks things off.
+to see it in action, run: ansible-playbook ansible/playbook.yml -i 192.241.213.87, -u root 
+change the IP to a fresh infra test machine to get the whole experience :)
+
+rationale:
+i like that everything here is super lightweight and portable -- it'll work on most any ubuntu version.
+
+finally, speaking of portable, there's a dockerfile. it's not being used anywhere -- just a quick example
+of the kind of solution I would have likely gone with if you hadn't provided me an instance. thanks, this was fun!

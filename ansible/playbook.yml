@@ -1,0 +1,40 @@
+## this playbook can be run against any ubuntu server to automatically provision our endpoint.
+
+## from the root directory, use this command to run me:
+## ansible-playbook ansible/playbook.yml -i <SERVER_IP>, -u root
+##   NOTE: even if you're only running against one server, that comma is required.
+##         don't blame me, ansible is just dumb like that.
+---
+- hosts: all
+  tasks:
+    - name: verify we've python and git
+      apt:
+        pkg:
+          - git
+          - python3
+          - python3-pip
+        state: latest
+        update_cache: true
+        
+    - name: grab our code from github
+      ansible.builtin.git:
+        repo: 'https://github.com/thedrex/qn_infra.git'
+        dest: ~/takehome
+        
+    - name: install flask
+      ansible.builtin.pip:
+        requirements: ~/takehome/webserver/requirements.txt
+        
+    - name: copy our service to systemd
+      ansible.builtin.copy:
+        src: ../systemd/quicknode.service
+        dest: /etc/systemd/system/quicknode.service
+        
+    - name: bounce the daemon so it sees us
+      ansible.builtin.systemd:
+        daemon_reload: yes
+        
+    - name: start our endpoint, yo
+      ansible.builtin.systemd:
+        state: started
+        name: quicknode

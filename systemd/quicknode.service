@@ -1,0 +1,15 @@
+## servers always gonna server, so we're letting systemd make sure our endpoint 
+## gets restarted automatically after a reboot/crash/disaster 
+
+[Unit]
+Description=quicknode infra takehome
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/root/takehome/webserver
+ExecStart=/usr/local/bin/flask run --host=0.0.0.0 --port=80
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
