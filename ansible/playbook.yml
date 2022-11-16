@@ -34,6 +34,11 @@
       ansible.builtin.systemd:
         daemon_reload: yes
         
+    - name: configure start-on-boot
+      ansible.builtin.systemd:
+        name: quicknode
+        enabled: yes
+        
     - name: start our endpoint, yo
       ansible.builtin.systemd:
         state: started
